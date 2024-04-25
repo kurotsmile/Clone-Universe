@@ -18,7 +18,14 @@ public class App : MonoBehaviour
 
     public void Btn_all_app()
     {
-        
+        if (carrot.os_app == Carrot.OS.Android)
+        {
+            List<string> list = this.GetInstalledApps();
+        }
+        else
+        {
+            carrot.Show_msg("Clone Universe", "This function only works on Android devices",Carrot.Msg_Icon.Error);
+        }
     }
 
     public void Btn_run()
