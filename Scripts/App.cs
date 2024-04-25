@@ -17,14 +17,20 @@ public class App : MonoBehaviour
         this.carrot.Load_Carrot();
     }
 
-
     public void Btn_all_app()
     {
         if (carrot.os_app == Carrot.OS.Android)
         {
             List<string> list = this.GetInstalledApps();
             this.box = carrot.Create_Box();
-            this.box.set_title("");
+            this.box.set_title("List apps");
+
+            for(int i = 0; i < list.Count; i++)
+            {
+                Carrot_Box_Item item_app = this.box.create_item("item_app_" + i);
+                item_app.set_title(list[i].ToString());
+                item_app.set_tip(list[i].ToString());
+            }
         }
         else
         {
@@ -50,6 +56,7 @@ public class App : MonoBehaviour
             AndroidJavaObject currentActivity = unity.GetStatic<AndroidJavaObject>("currentActivity");
 
             currentActivity.Call("startActivity", intentObject);
+            carrot.Show_msg("Run","App pi active",Msg_Icon.Success);
         }
     }
 
