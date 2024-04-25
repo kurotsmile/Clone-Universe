@@ -1,5 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
+using Carrot;
 using UnityEngine;
 
 public class App : MonoBehaviour
@@ -9,7 +11,7 @@ public class App : MonoBehaviour
 
     [Header("Config")]
     public bool is_sell = false;
-
+    private Carrot_Box box = null;
     void Start()
     {
         this.carrot.Load_Carrot();
@@ -21,6 +23,8 @@ public class App : MonoBehaviour
         if (carrot.os_app == Carrot.OS.Android)
         {
             List<string> list = this.GetInstalledApps();
+            this.box = carrot.Create_Box();
+            this.box.set_title("");
         }
         else
         {
@@ -30,7 +34,23 @@ public class App : MonoBehaviour
 
     public void Btn_run()
     {
+        if (Application.platform == RuntimePlatform.Android)
+        {
 
+            string filePath = Path.Combine(Application.streamingAssetsPath, "pi.apk");
+
+            AndroidJavaClass intentClass = new AndroidJavaClass("android.content.Intent");
+            AndroidJavaObject intentObject = new AndroidJavaObject("android.content.Intent");
+            intentObject.Call<AndroidJavaObject>("setAction", intentClass.GetStatic<string>("ACTION_VIEW"));
+            AndroidJavaClass uriClass = new AndroidJavaClass("android.net.Uri");
+            AndroidJavaObject uriObject = uriClass.CallStatic<AndroidJavaObject>("parse", "file://" + filePath);
+            intentObject.Call<AndroidJavaObject>("setDataAndType", uriObject, "application/vnd.android.package-archive");
+
+            AndroidJavaClass unity = new AndroidJavaClass("com.unity3d.player.UnityPlayer");
+            AndroidJavaObject currentActivity = unity.GetStatic<AndroidJavaObject>("currentActivity");
+
+            currentActivity.Call("startActivity", intentObject);
+        }
     }
 
     private List<string> GetInstalledApps()
