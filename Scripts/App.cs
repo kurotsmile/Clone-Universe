@@ -62,7 +62,7 @@ public class App : MonoBehaviour
 
     private List<string> GetInstalledApps()
     {
-        List<string> installedApps = new List<string>();
+        List<string> installedApps = new();
 
         AndroidJavaObject packageManager = new AndroidJavaClass("android.content.pm.PackageManager");
         AndroidJavaObject context = new AndroidJavaClass("com.unity3d.player.UnityPlayer").GetStatic<AndroidJavaObject>("currentActivity").Call<AndroidJavaObject>("getApplicationContext");
@@ -77,6 +77,11 @@ public class App : MonoBehaviour
         }
 
         return installedApps;
+    }
+
+    public void Btn_setting()
+    {
+        carrot.Create_Setting();
     }
 
 }
